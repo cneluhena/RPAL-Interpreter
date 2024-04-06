@@ -1,9 +1,9 @@
-import string
-import tree_build as tb
+import string 
+from tree_build import BT, print_tree,stack
 
 
 next_token = None
-tree = []
+
 digits = []
 strings = []
 identifiers = []
@@ -19,14 +19,12 @@ def read(token):
     global next_token
     if input[0] == token:
         input = input[1:]
-        # print('token is read', next_token)
         if len(input) != 0:
             next_token = input[0]
 
 
 def E():
     global next_token
-    print(next_token, 'E()')
     if next_token == None:
         next_token = 'let'
         read('let')
@@ -58,7 +56,6 @@ def E():
 
 def D():
     global next_token
-    print(next_token, 'D()')
 
     Da()
     if next_token == 'within':
@@ -367,12 +364,6 @@ def Rn():
         read(')')
 
 
-def BT(element, no_of_children):
-    global tree
-    tree.append((element, no_of_children))
-    print('BT', element)
-
-
 with open("a.txt", "r") as file:
     file_content = file.read()
     print(file_content)
@@ -445,10 +436,5 @@ while (a < len(file_content)):
 
 print(input)
 E()
-print(tree)
-tree.reverse()
-print(tree)
-
-
-root = tb.build_tree(tree)
-tb.print_tree(root)
+root = stack[0]
+print_tree(root)
