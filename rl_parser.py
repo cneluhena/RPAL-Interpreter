@@ -17,10 +17,16 @@ keywords = ['fn', 'where', 'let', 'aug', 'within', 'in', 'rec', 'eq', 'gr', 'ge'
 def read(token):
     global input
     global next_token
+
     if input[0] == token:
         input = input[1:]
         if len(input) != 0:
             next_token = input[0]
+        else:
+            next_token = None
+    else:
+        print('Error')
+        next_token = None
 
 
 def E():
@@ -322,9 +328,12 @@ def Rn():
     if next_token in identifiers or next_token in digits or next_token in strings:
         if next_token in identifiers:
             BT(f'<ID:{next_token}>', 0)
+            read(next_token)
+
         elif next_token in digits:
             BT(f'<INT:{next_token}>', 0)
-        read(next_token)
+            read(next_token)
+
     elif next_token in ['true', 'false', 'nil', 'dummy']:
         read(next_token)
         BT(next_token, 0)
