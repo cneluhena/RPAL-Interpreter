@@ -56,7 +56,6 @@ def E():
 
 def D():
     global next_token
-
     Da()
     if next_token == 'within':
         read('within')
@@ -66,8 +65,6 @@ def D():
 
 def Da():
     global next_token
-    print(next_token, 'Da()')
-
     Dr()
     if next_token == 'and':
         read('and')
@@ -82,7 +79,6 @@ def Da():
 
 def Dr():
     global next_token
-    print(next_token, 'Dr()')
     if next_token == 'rec':
         read('rec')
         Db()
@@ -93,7 +89,6 @@ def Dr():
 
 def Db():
     global next_token
-    print(next_token, 'Db()')
     if next_token in identifiers:
         if input[1] == ',':
             Vl()
@@ -102,7 +97,6 @@ def Db():
             E()
         elif input[1] == '=':
             BT(f'<ID:{next_token}>', 0)
-            print('This is the token', next_token)
             read(next_token)
             read('=')
             E()
@@ -114,7 +108,6 @@ def Db():
             read(next_token)
             N = 1
             Vb()
-            print(next_token, 'Vb()')
             N += 1
             while next_token in identifiers or next_token == '(':
                 Vb()
@@ -132,11 +125,9 @@ def Db():
 
 def Vb():
     global next_token
-    print(next_token, 'Vb()')
     if next_token in identifiers:
         BT(f'<ID:{next_token}>', 0)
         read(next_token)
-        print(next_token)
     elif next_token == '(':
         read(next_token)
         if next_token in identifiers:
@@ -149,7 +140,6 @@ def Vb():
 
 def Vl():
     global next_token
-    print(next_token, 'Vl()')
     if next_token in identifiers:
         BT(f'<ID:{next_token}>', 0)
         read(next_token)
@@ -161,15 +151,12 @@ def Vl():
                 read(next_token)
                 N += 1
         if N != 1:
-            print('Number of child', N)
             BT(',', N)
 
 
 def Ew():
     global next_token
-    print(next_token, 'Ew()')
     T()
-    print('after T next token', next_token)
     if next_token == 'where':
         read(next_token)
         Dr()
@@ -178,7 +165,6 @@ def Ew():
 
 def T():
     global next_token
-    print(next_token, 'T()')
     Ta()
     N = 1
     if next_token == ',':
@@ -186,7 +172,6 @@ def T():
         Ta()
         N += 1
         while next_token == ',':
-            print('Reacehd tau')
             read(next_token)
             Ta()
             N += 1
@@ -195,7 +180,6 @@ def T():
 
 def Ta():
     global next_token
-    print(next_token, 'Ta()')
     Tc()
     while next_token == 'aug':
         read(next_token)
@@ -205,7 +189,6 @@ def Ta():
 
 def Tc():
     global next_token
-    print(next_token, 'Tc()')
     B()
     if next_token == '->':
         read('->')
@@ -217,7 +200,6 @@ def Tc():
 
 def B():
     global next_token
-    print(next_token, 'B()')
     Bt()
     while next_token == 'or':
         read(next_token)
@@ -227,7 +209,6 @@ def B():
 
 def Bt():
     global next_token
-    print(next_token, 'Bt()')
     Bs()
     while next_token == '&':
         read(next_token)
@@ -237,7 +218,6 @@ def Bt():
 
 def Bs():
     global next_token
-    print(next_token, 'Bs()')
     if next_token == 'not':
         read(next_token)
         Bp()
@@ -248,7 +228,6 @@ def Bs():
 
 def Bp():
     global next_token
-    print(next_token, 'Bp()')
     A()
     if next_token == 'gr' or next_token == '>':
         read(next_token)
@@ -278,7 +257,6 @@ def Bp():
 
 def A():
     global next_token
-    print(next_token, 'A()')
     if next_token == '+':
         read(next_token)
         At()
@@ -289,7 +267,6 @@ def A():
     else:
         At()
         while next_token == '+' or next_token == '-':
-            print('Reached this point')
             sign = next_token
             read(next_token)
             At()
@@ -298,7 +275,6 @@ def A():
 
 def At():
     global next_token
-    print(next_token, 'At()')
     Af()
     while next_token in ['*', '/']:
         read(next_token)
@@ -309,7 +285,6 @@ def At():
 
 def Af():
     global next_token
-    print(next_token, 'Af()')
     Ap()
     while next_token == '**':
         read('**')
@@ -320,7 +295,6 @@ def Af():
 
 def Ap():
     global next_token
-    print(next_token, 'Ap()')
     R()
     while next_token == "@":
         read(next_token)
@@ -335,7 +309,6 @@ def Ap():
 
 def R():
     global next_token
-    print(next_token, 'R()')
 
     Rn()
     while next_token in identifiers or next_token in digits or next_token in strings or next_token in ['true', 'false', 'nil', 'dummy', '(']:
@@ -345,7 +318,6 @@ def R():
 
 def Rn():
     global next_token
-    print(next_token, 'Rn()')
 
     if next_token in identifiers or next_token in digits or next_token in strings:
         if next_token in identifiers:
@@ -353,13 +325,11 @@ def Rn():
         elif next_token in digits:
             BT(f'<INT:{next_token}>', 0)
         read(next_token)
-        print(input)
     elif next_token in ['true', 'false', 'nil', 'dummy']:
         read(next_token)
         BT(next_token, 0)
     elif next_token == '(':
         read('(')
-        print(input)
         E()
         read(')')
 
@@ -434,7 +404,6 @@ while (a < len(file_content)):
     if token != '<DELETE>':
         input.append(str)
 
-print(input)
 E()
 root = stack[0]
 print_tree(root)
