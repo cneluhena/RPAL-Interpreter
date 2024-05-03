@@ -1,5 +1,5 @@
 import string 
-from tree_build import BT, print_tree,stack
+from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack
 
 
 next_token = None
@@ -24,20 +24,18 @@ def read(token):
             next_token = input[0]
         else:
             next_token = None
-    else:
-        print('Error')
-        next_token = None
+    # else:
+    #     print('Error')
+    #     next_token = None
 
 
 def E():
     global next_token
+    global input
     if next_token == None:
-        next_token = 'let'
-        read('let')
-        D()
-        read('in')
+        next_token = input[0]
         E()
-        BT('let', 2)
+
 
     elif next_token == 'let':
         read('let')
@@ -341,6 +339,8 @@ def Rn():
         read('(')
         E()
         read(')')
+    else:
+        print('error')
 
 
 with open("a.txt", "r") as file:
@@ -400,6 +400,7 @@ while (a < len(file_content)):
             a += 1
 
     print(repr(str), "=>", token)
+
     if str not in keywords:
         if token == '<Identifier>':
             identifiers.append(str)
@@ -413,6 +414,25 @@ while (a < len(file_content)):
     if token != '<DELETE>':
         input.append(str)
 
+
+def standardizing_let(root_node: Node):
+    root_node.value = 'gamma'
+    root_node.left.value = 'lambda'
+    exchange_node1 = root_node.left.right
+    exchange_node2 = root_node.left.left.right
+    root_node.left.left.right = exchange_node1
+    root_node.left.right = exchange_node2
+
+
+
+
+print('\n', '\n')
+print(input)
+
 E()
 root = stack[0]
+# # pre_order_traverse(root, 'let')
+# # new_stack.reverse()
+# # for node in new_stack:
+# #     standardizing_let(node)
 print_tree(root)
