@@ -29,19 +29,20 @@ def print_tree(node, N=0):
     print_tree(node.right,N)
 
 
-def pre_order_traverse(node ,special_value):
+def pre_order_traverse(node):
+    special_values = ['let' ,'where', 'fcn_form']
     if node is None:
         return
     
     # Deal with the node
-    if node.value == special_value:
+    if node.value in special_values:
         new_stack.append(node)
    
     # Recur on left subtree
-    pre_order_traverse(node.left, special_value)
+    pre_order_traverse(node.left)
 
     # Recur on right subtree
-    pre_order_traverse(node.right, special_value)
+    pre_order_traverse(node.right)
 
 
 def print_st(node,stNode,  N=0):

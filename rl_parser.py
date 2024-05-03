@@ -415,7 +415,7 @@ while (a < len(file_content)):
         input.append(str)
 
 
-def standardizing_let(root_node: Node):
+def std_let(root_node: Node):
     root_node.value = 'gamma'
     root_node.left.value = 'lambda'
     exchange_node1 = root_node.left.right
@@ -424,7 +424,7 @@ def standardizing_let(root_node: Node):
     root_node.left.right = exchange_node2
 
 
-def stand_where(root_node):
+def std_where(root_node):
     node1 = root_node.left
     node2 = node1.right
     node3 = node2.left
@@ -461,8 +461,14 @@ print(input)
 
 E()
 root = stack[0]
-pre_order_traverse(root, 'fcn_form')
+pre_order_traverse(root)
 new_stack.reverse()
 for node in new_stack:
-    std_fcn_form(node)
+    if node.value == 'let':
+        std_let(node)
+    elif node.value == 'where':
+        std_where(node)
+    elif node.value == 'fcn_form':
+        std_fcn_form(node)
+
 print_tree(root)
