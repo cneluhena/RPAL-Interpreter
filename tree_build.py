@@ -7,6 +7,13 @@ class Node:
         self.right = None
         self.child_number = child_number
 
+class STNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+
 
 def print_tree(node, N=0):
     if node is None:
@@ -20,6 +27,7 @@ def print_tree(node, N=0):
 
     # Recur on right subtree
     print_tree(node.right,N)
+
 
 def pre_order_traverse(node ,special_value):
     if node is None:
@@ -36,12 +44,13 @@ def pre_order_traverse(node ,special_value):
     pre_order_traverse(node.right, special_value)
 
 
-def print_st(node, N=0):
+def print_st(node,stNode,  N=0):
     if node is None:
         return
 
     # Deal with the node
     print(f'{"."*N}{node.value}')
+
 
     # Recur on left subtree
     print_st(node.left, N+1)

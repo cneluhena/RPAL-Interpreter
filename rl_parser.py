@@ -1,5 +1,5 @@
 import string 
-from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack
+from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode
 
 
 next_token = None
@@ -424,6 +424,36 @@ def standardizing_let(root_node: Node):
     root_node.left.right = exchange_node2
 
 
+def stand_where(root_node):
+    node1 = root_node.left
+    node2 = node1.right
+    node3 = node2.left
+    node4 = node3.right
+    node2.right = node4
+    node1.right = None
+    root_node.left = node2
+    node3.right = node1
+    root_node.value = 'gamma'
+    node2.value = 'lambda'
+
+
+def std_fcn_form(root_node):
+    root_node.value = '='
+    vari_node = root_node.left.right
+    f_node = root_node.left
+    newNode = STNode('lambda')
+    first_child = f_node.right
+    f_node.right = newNode
+    newNode.left = first_child
+    vari_node = first_child
+    while '<ID:' in vari_node.right.value:
+        newNode = STNode('lambda')
+        newNode.left = vari_node.right
+        vari_node.right = newNode
+        vari_node = newNode.left 
+
+
+
 
 
 print('\n', '\n')
@@ -431,8 +461,8 @@ print(input)
 
 E()
 root = stack[0]
-# # pre_order_traverse(root, 'let')
-# # new_stack.reverse()
-# # for node in new_stack:
-# #     standardizing_let(node)
+pre_order_traverse(root, 'fcn_form')
+new_stack.reverse()
+for node in new_stack:
+    std_fcn_form(node)
 print_tree(root)

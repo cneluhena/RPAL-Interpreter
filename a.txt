@@ -1,1 +1,1 @@
-(x + y where y=4) where x = 3
+let f x y z = x + y + z in f 1 2 3
