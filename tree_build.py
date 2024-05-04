@@ -28,9 +28,18 @@ def print_tree(node, N=0):
     # Recur on right subtree
     print_tree(node.right,N)
 
+def find_parent(root, child_node):
+    if root is None:
+        return None
+    if root.right == child_node:
+        return root
+    left_parent = find_parent(root.left, child_node)
+    if left_parent:
+        return left_parent
+    return find_parent(root.right, child_node)
 
 def pre_order_traverse(node):
-    special_values = ['let' ,'where', 'fcn_form']
+    special_values = ['let' ,'where', 'fcn_form', 'tau', 'lambda', 'within']
     if node is None:
         return
     
