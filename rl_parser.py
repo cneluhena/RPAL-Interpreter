@@ -165,11 +165,13 @@ def Ew():
         read(next_token)
         Dr()
         BT('where', 2)
+    
 
 
 def T():
     global next_token
     Ta()
+
     N = 1
     if next_token == ',':
         read(next_token)
@@ -185,6 +187,7 @@ def T():
 def Ta():
     global next_token
     Tc()
+    
     while next_token == 'aug':
         read(next_token)
         Tc()
@@ -194,6 +197,7 @@ def Ta():
 def Tc():
     global next_token
     B()
+
     if next_token == '->':
         read('->')
         Tc()
@@ -205,6 +209,7 @@ def Tc():
 def B():
     global next_token
     Bt()
+
     while next_token == 'or':
         read(next_token)
         Bt()
@@ -228,6 +233,7 @@ def Bs():
         BT('not', 1)
     else:
         Bp()
+        
 
 
 def Bp():
@@ -261,29 +267,33 @@ def Bp():
 
 def A():
     global next_token
+
     if next_token == '+':
         read(next_token)
         At()
+
     elif next_token == '-':
         read(next_token)
         At()
         BT('neg', 1)
-    else:
+    
+    At()
+    while next_token == '+' or next_token == '-':
+        sign = next_token
+        read(next_token)
         At()
-        while next_token == '+' or next_token == '-':
-            sign = next_token
-            read(next_token)
-            At()
-            BT(sign, 2)
+        BT(sign, 2)
 
 
 def At():
     global next_token
     Af()
     while next_token in ['*', '/']:
+        temp_token = next_token
+        print('next token is',next_token)
         read(next_token)
         Af()
-        BT(next_token, 2)
+        BT(temp_token, 2)
         # Output code for performing the operation op
 
 
@@ -339,8 +349,7 @@ def Rn():
         read('(')
         E()
         read(')')
-    else:
-        print('error')
+    
 
 
 with open("a.txt", "r") as file:
@@ -513,6 +522,7 @@ def std_within(root_node):
     right_child.left = newNode
     X2.right = right_child
     root_node.left = X2
+
 
 
 

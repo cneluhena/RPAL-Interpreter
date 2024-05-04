@@ -1,1 +1,1 @@
-let c = 3 within f x = x + c in f 2
+((not(-x+y > z where y =3)  where x = 10) where z = 10)
