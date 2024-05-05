@@ -1,7 +1,2 @@
-class CSEle:
-    def __init__(self, top, bottom):
-        self.top = top
-        self.bottom = bottom
-    
+from tree_build import ctr_structures
 
-        

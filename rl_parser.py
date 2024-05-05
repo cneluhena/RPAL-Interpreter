@@ -1,6 +1,7 @@
 import string 
-from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent, generate_cs, cs_stack
-from cse_machine import CSEle
+from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent, generate_cs, cs_stack, ctr_structures, CSNode
+
+
 
 
 next_token = None
@@ -14,7 +15,14 @@ keywords = ['fn', 'where', 'let', 'aug', 'within', 'in', 'rec', 'eq', 'gr', 'ge'
             'ls', 'le', 'ne', 'or', '@', 'not', '&', 'true', 'false', 'nil', 'dummy', 'and', '|']
 
 
-    
+class Env:
+    def __init__(self, index):
+        self.index = index
+        self.child_env = []
+
+
+
+
 def read(token):
     global input
     global next_token
@@ -553,5 +561,24 @@ for node in new_stack:
 print_tree(root)
 generate_cs(root)
 print('\n')
-for i in cs_stack:
-    print(len(i.elements))
+
+
+
+#cse machine
+control_stack = []
+variable_stack = []
+inital_env = Env(index=0)
+inital_cs = ctr_structures[0]
+control_stack.append(inital_env)
+variable_stack.append(inital_env)
+control_stack = control_stack + ctr_structures[0].elements
+print('consndfjsdnf', control_stack)
+# while len(control_stack) != 0:
+
+# while len(control_stack) != 0:
+last_ele = control_stack[-1]
+if isinstance(last_ele, Node):
+    if '<INT:' in last_ele.value:
+        variable_stack.insert(0, last_ele)
+        control_stack.pop()
+

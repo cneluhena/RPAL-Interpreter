@@ -1,6 +1,7 @@
 stack = []
 new_stack = []
 cs_stack = []
+ctr_structures = []
 class Node:
     def __init__(self, value, child_number):
         self.value = value
@@ -17,8 +18,10 @@ class STNode:
 
 class CS:
     def __init__(self, index =0):
+        self.prev_cs = None
         self.elements = []
         self.index =index
+        self.prec_cs = None
 
 
 class CSNode:
@@ -118,6 +121,7 @@ def generate_cs(node, current_cs=None):
     # Deal with the node
     if current_cs is None:
         current_cs = CS()
+        ctr_structures.append(current_cs)
 
     if node.value == 'lambda':
         top = node.left
@@ -127,22 +131,21 @@ def generate_cs(node, current_cs=None):
         current_cs.elements.append(csNode)
         cs_stack.append(current_cs)
         print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
-
         current_cs = CS(index=newIndex)
+        ctr_structures.append(current_cs)
         node.left = node.left.right
+        generate_cs(csNode.node.left, current_cs)
+        prev_cs = cs_stack.pop()
+        print(csNode.node.right.value)
+        generate_cs(csNode.node.right, prev_cs)
+
 
     else:
         current_cs.elements.append(node)
         print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
 
-        
-
-    generate_cs(node.left, current_cs)
-    if node.value == 'lambda':
-        current_cs = cs_stack[-2]
-        # Recur on right subtree
+        generate_cs(node.left, current_cs)
         generate_cs(node.right, current_cs)
-    else:
-        generate_cs(node.right, current_cs)
+  
     
     
