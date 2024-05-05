@@ -552,7 +552,6 @@ pre_order_traverse(root)
 new_stack.reverse()
 for node in new_stack:
     if node.value == 'let':
-        print('reacehd let')
         std_let(node)
     elif node.value == 'where':
         std_where(node)
@@ -563,15 +562,12 @@ for node in new_stack:
     elif node.value == 'lambda':
         std_multi_param(node)
     elif node.value == 'within':
-        print('reached within')
         std_within(node)
     
 
 print_tree(root)
 generate_cs(root)
 print('\n')
-
-
 
 #cse machine
 control_stack = []
@@ -621,11 +617,14 @@ while len(control_stack) != 0:
            
         
         elif last_ele.value == '+':
+            #print('chamoe', variable_stack.pop(0).value)
             operand_1 = extract_number(variable_stack.pop(0).value)
             operand_2 = extract_number(variable_stack.pop(0).value)
             if last_ele.value == '+':
                 control_stack.pop()
-                variable_stack.insert(0, operand_1 + operand_2)
+                total = operand_1 + operand_2
+                total_node = STNode(f'<INT:{total}>')
+                variable_stack.insert(0, total_node)
 
 
     elif isinstance(last_ele, CSNode):
@@ -633,11 +632,11 @@ while len(control_stack) != 0:
         variable_stack.insert(0, last_ele)
         control_stack.pop()
     
-    elif isinstance(last_ele, Env) and isinstance(variable_stack[0], int):
+    elif isinstance(last_ele, Env):
         if last_ele == variable_stack[1]:
             control_stack.pop()
             variable_stack.pop(1)
-print(variable_stack[0])
+print(extract_number(variable_stack[0].value))
     
     
 

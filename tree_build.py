@@ -115,7 +115,7 @@ def print_tree_postorder(node):
     print(f'{node.value}')
 
 
-def generate_cs(node, current_cs=None):
+def generate_cs(node, current_cs=None, num_of_lambdas=0):
     if node is None:
         return
 
@@ -123,11 +123,12 @@ def generate_cs(node, current_cs=None):
     if current_cs is None:
         current_cs = CS()
         ctr_structures.append(current_cs)
+        
 
     if node.value == 'lambda':
         top = node.left
         newNode = STNode(top.value)
-        newIndex = current_cs.index + 1
+        newIndex = num_of_lambdas + 1
         csNode = CSNode(newNode, newIndex, node)
         current_cs.elements.append(csNode)
         cs_stack.append(current_cs)
@@ -135,18 +136,17 @@ def generate_cs(node, current_cs=None):
         current_cs = CS(index=newIndex)
         ctr_structures.append(current_cs)
         node.left = node.left.right
-        generate_cs(csNode.node.left, current_cs)
+        generate_cs(csNode.node.left, current_cs=current_cs, num_of_lambdas=newIndex)
         prev_cs = cs_stack.pop()
-        print(csNode.node.right.value)
-        generate_cs(csNode.node.right, prev_cs)
+        generate_cs(csNode.node.right, current_cs=prev_cs, num_of_lambdas=newIndex)
 
 
     else:
         current_cs.elements.append(node)
         #print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
 
-        generate_cs(node.left, current_cs)
-        generate_cs(node.right, current_cs)
+        generate_cs(node.left, current_cs, num_of_lambdas)
+        generate_cs(node.right, current_cs, num_of_lambdas)
   
     
     
