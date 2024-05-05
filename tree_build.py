@@ -1,5 +1,6 @@
 stack = []
 new_stack = []
+cs_stack = []
 class Node:
     def __init__(self, value, child_number):
         self.value = value
@@ -9,11 +10,23 @@ class Node:
 
 class STNode:
     def __init__(self, value):
+
         self.value = value
         self.left = None
         self.right = None
 
+class CS:
+    def __init__(self, index =0):
+        self.elements = []
+        self.index =index
 
+
+class CSNode:
+    def __init__(self, top, bottom, node):
+        self.top = top
+        self.bottom = bottom
+        self.node = node
+        self.value = node.value
 
 def print_tree(node, N=0):
     if node is None:
@@ -28,6 +41,7 @@ def print_tree(node, N=0):
     # Recur on right subtree
     print_tree(node.right,N)
 
+
 def find_parent(root, child_node):
     if root is None:
         return None
@@ -37,6 +51,7 @@ def find_parent(root, child_node):
     if left_parent:
         return left_parent
     return find_parent(root.right, child_node)
+
 
 def pre_order_traverse(node):
     special_values = ['let' ,'where', 'fcn_form', 'tau', 'lambda', 'within']
@@ -94,3 +109,40 @@ def print_tree_postorder(node):
 
     # Deal with the node
     print(f'{node.value}')
+
+
+def generate_cs(node, current_cs=None):
+    if node is None:
+        return
+
+    # Deal with the node
+    if current_cs is None:
+        current_cs = CS()
+
+    if node.value == 'lambda':
+        top = node.left
+        newNode = STNode(top.value)
+        newIndex = current_cs.index + 1
+        csNode = CSNode(newNode, newIndex, node)
+        current_cs.elements.append(csNode)
+        cs_stack.append(current_cs)
+        print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
+
+        current_cs = CS(index=newIndex)
+        node.left = node.left.right
+
+    else:
+        current_cs.elements.append(node)
+        print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
+
+        
+
+    generate_cs(node.left, current_cs)
+    if node.value == 'lambda':
+        current_cs = cs_stack[-2]
+        # Recur on right subtree
+        generate_cs(node.right, current_cs)
+    else:
+        generate_cs(node.right, current_cs)
+    
+    

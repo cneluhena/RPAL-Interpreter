@@ -1,5 +1,6 @@
 import string 
-from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent
+from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent, generate_cs, cs_stack
+from cse_machine import CSEle
 
 
 next_token = None
@@ -267,7 +268,6 @@ def Bp():
 
 def A():
     global next_token
-
     if next_token == '+':
         read(next_token)
         At()
@@ -551,3 +551,7 @@ for node in new_stack:
     
 
 print_tree(root)
+generate_cs(root)
+print('\n')
+for i in cs_stack:
+    print(len(i.elements))
