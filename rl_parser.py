@@ -1,5 +1,5 @@
-import string 
-from tree_build import BT, print_tree,stack
+import string
+from tree_build import BT, print_tree, stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent
 
 
 next_token = None
@@ -13,7 +13,6 @@ keywords = ['fn', 'where', 'let', 'aug', 'within', 'in', 'rec', 'eq', 'gr', 'ge'
             'ls', 'le', 'ne', 'or', '@', 'not', '&', 'true', 'false', 'nil', 'dummy', 'and', '|']
 
 
-    
 def read(token):
     global input
     global next_token
@@ -24,20 +23,17 @@ def read(token):
             next_token = input[0]
         else:
             next_token = None
-    else:
-        print('Error')
-        next_token = None
+    # else:
+    #     print('Error')
+    #     next_token = None
 
 
 def E():
     global next_token
+    global input
     if next_token == None:
-        next_token = 'let'
-        read('let')
-        D()
-        read('in')
+        next_token = input[0]
         E()
-        BT('let', 2)
 
     elif next_token == 'let':
         read('let')
@@ -108,7 +104,6 @@ def Db():
             E()
             BT('=', 2)
 
-
         elif input[1] in identifiers or input[1] == '(':
             BT(f'<ID:{next_token}>', 0)
             read(next_token)
@@ -121,8 +116,7 @@ def Db():
             read('=')
             E()
             BT('fcn_form', N+1)
-        
-        
+
     elif next_token == '(':
         read('(')
         D()
@@ -341,6 +335,8 @@ def Rn():
         read('(')
         E()
         read(')')
+    else:
+        print('error')
 
 
 with open("a.txt", "r") as file:
@@ -400,6 +396,7 @@ while (a < len(file_content)):
             a += 1
 
     print(repr(str), "=>", token)
+
     if str not in keywords:
         if token == '<Identifier>':
             identifiers.append(str)
@@ -413,6 +410,134 @@ while (a < len(file_content)):
     if token != '<DELETE>':
         input.append(str)
 
+
+def std_let(root_node: Node):
+    root_node.value = 'gamma'
+    root_node.left.value = 'lambda'
+    exchange_node1 = root_node.left.right
+    exchange_node2 = root_node.left.left.right
+    root_node.left.left.right = exchange_node1
+    root_node.left.right = exchange_node2
+
+
+def std_where(root_node):
+    node1 = root_node.left
+    node2 = node1.right
+    node3 = node2.left
+    node4 = node3.right
+    node2.right = node4
+    node1.right = None
+    root_node.left = node2
+    node3.right = node1
+    root_node.value = 'gamma'
+    node2.value = 'lambda'
+
+
+def std_fcn_form(root_node):
+    P = root_node.left
+
+    newRoot = STNode("=")
+    newRoot.left = P
+
+    lambdaNode = STNode("lambda")
+    newRoot.right = lambdaNode
+
+    lambdaNode.left = root_node.left.right
+    P.right = None
+    temp = lambdaNode
+    while '<ID:' in temp.left.right.value:
+        newNode = STNode('lambda')
+        lambdaNode.right = newNode
+        newNode.left = temp.left.right
+        temp.left.right = None
+        temp = newNode
+    temp.right = temp.left.right
+    temp.left.right = None
+
+
+def std_tuple(root_node, root):
+    child = root_node.left
+    sibling = root_node.right
+    children = []
+    children.append(child)
+    while child.right != None:
+        child = child.right
+        children.append(child)
+    prev_node = None
+    print([child.value for child in children])
+    for child in children:
+        node1 = STNode('gamma')
+        node2 = STNode('gamma')
+        node3 = STNode('aug')
+        node1.left = node2
+        node2.left = node3
+        node2.right = child
+        node2.right.right = None
+        if prev_node is None:
+            prev_node = node1
+            node3.right = STNode('nil')
+        else:
+            node3.right = prev_node
+            prev_node = node1
+    prev_node.right = root_node.right
+    parent_node = find_parent(root, root_node)
+    parent_node.right = prev_node
+
+
+def std_multi_param(root_node):
+    variables_stack = []
+    child = root_node.left
+    if child is not None and '<ID:' in child.value:
+        while '<ID:' in child.right.value:
+            sibling = child.right
+            newNode = STNode('lambda')
+            newNode.right = sibling.right
+            sibling.right = None
+            newNode.left = sibling
+            child.right = newNode
+            child = newNode
+
+
+def std_within(root_node):
+    left_child = root_node.left
+    right_child = root_node.left.right
+    root_node.value = '='
+    right_child.value = 'gamma'
+    X1 = left_child.left
+    X2 = right_child.left
+    E1 = X1.right
+    E2 = X2.right
+    newNode = STNode('lambda')
+    newNode.left = X1
+    X1.right = E2
+    newNode.right = E1
+    right_child.left = newNode
+    X2.right = right_child
+    root_node.left = X2
+
+
+print('\n', '\n')
+print(input)
+
 E()
 root = stack[0]
+pre_order_traverse(root)
+new_stack.reverse()
+for node in new_stack:
+    if node.value == 'let':
+        print('reached let')
+        std_let(node)
+    elif node.value == 'where':
+        std_where(node)
+    elif node.value == 'fcn_form':
+        std_fcn_form(node)
+    elif node.value == 'tau':
+        std_tuple(node, root)
+    elif node.value == 'lambda':
+        std_multi_param(node)
+    elif node.value == 'within':
+        print('reached within')
+        std_within(node)
+
+
 print_tree(root)
