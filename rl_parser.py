@@ -2,7 +2,7 @@ import string
 from tree_build import BT, print_tree,stack, print_tree_postorder, Node, pre_order_traverse, new_stack, STNode, find_parent, generate_cs, cs_stack, ctr_structures, CSNode
 
 
-
+import re
 
 next_token = None
 
@@ -16,9 +16,12 @@ keywords = ['fn', 'where', 'let', 'aug', 'within', 'in', 'rec', 'eq', 'gr', 'ge'
 
 
 class Env:
-    def __init__(self, index):
+    def __init__(self, value=None, variable=None, index=0, parent_env = None):
+        self.value = value
+        self.variable = variable
         self.index = index
         self.child_env = []
+        self.parent_env = parent_env
 
 
 
@@ -531,6 +534,12 @@ def std_within(root_node):
     X2.right = right_child
     root_node.left = X2
 
+def extract_number(input_string):
+    match = re.search(r'<INT:(\d+)>', input_string)
+    if match:
+        return int(match.group(1))
+    else:
+        return None
 
 
 
@@ -568,17 +577,71 @@ print('\n')
 control_stack = []
 variable_stack = []
 inital_env = Env(index=0)
+current_env = inital_env
 inital_cs = ctr_structures[0]
 control_stack.append(inital_env)
 variable_stack.append(inital_env)
 control_stack = control_stack + ctr_structures[0].elements
-print('consndfjsdnf', control_stack)
-# while len(control_stack) != 0:
 
-# while len(control_stack) != 0:
-last_ele = control_stack[-1]
-if isinstance(last_ele, Node):
-    if '<INT:' in last_ele.value:
+while len(control_stack) != 0:
+    last_ele = control_stack[-1]
+    if isinstance(last_ele, Node):
+        if '<INT:' in last_ele.value:
+            variable_stack.insert(0, last_ele)
+            control_stack.pop()
+        elif '<ID:' in last_ele.value:
+            id_value = last_ele.value
+            if id_value == current_env.variable.value:
+                control_stack.pop()
+                variable_stack.insert(0, current_env.value)
+            else:
+                flag = True
+                temp_env = current_env.parent_env
+                while flag:
+                    if id_value == temp_env.variable.value:
+                        control_stack.pop()
+                        variable_stack.insert(0, temp_env.value)
+                        flag = False
+                    temp_env = temp_env.parent_env
+                    
+
+        elif last_ele.value == 'gamma' and isinstance(variable_stack[0], CSNode):
+            control_stack.pop()
+            variable = variable_stack[0].top
+            cs_index = variable_stack[0].bottom
+            value = variable_stack[1]
+            newEnv = Env(value=value, variable=variable, index = current_env.index+1, parent_env=current_env)
+            current_env.child_env.append(newEnv)
+            current_env = newEnv
+            control_stack.append(current_env)
+            variable_stack.pop(0)
+            variable_stack.pop(0)
+            variable_stack.insert(0, current_env)
+            control_stack = control_stack + ctr_structures[cs_index].elements
+           
+        
+        elif last_ele.value == '+':
+            operand_1 = extract_number(variable_stack.pop(0).value)
+            operand_2 = extract_number(variable_stack.pop(0).value)
+            if last_ele.value == '+':
+                control_stack.pop()
+                variable_stack.insert(0, operand_1 + operand_2)
+
+
+    elif isinstance(last_ele, CSNode):
+        last_ele.env = current_env
         variable_stack.insert(0, last_ele)
         control_stack.pop()
+    
+    elif isinstance(last_ele, Env) and isinstance(variable_stack[0], int):
+        if last_ele == variable_stack[1]:
+            control_stack.pop()
+            variable_stack.pop(1)
+print(variable_stack[0])
+    
+    
+
+    
+    
+        
 

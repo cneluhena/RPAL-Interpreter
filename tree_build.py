@@ -17,11 +17,12 @@ class STNode:
         self.right = None
 
 class CS:
-    def __init__(self, index =0):
+    def __init__(self, index =0, env = None):
         self.prev_cs = None
         self.elements = []
         self.index =index
         self.prec_cs = None
+        self.env = None
 
 
 class CSNode:
@@ -130,7 +131,7 @@ def generate_cs(node, current_cs=None):
         csNode = CSNode(newNode, newIndex, node)
         current_cs.elements.append(csNode)
         cs_stack.append(current_cs)
-        print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
+        #print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
         current_cs = CS(index=newIndex)
         ctr_structures.append(current_cs)
         node.left = node.left.right
@@ -142,7 +143,7 @@ def generate_cs(node, current_cs=None):
 
     else:
         current_cs.elements.append(node)
-        print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
+        #print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
 
         generate_cs(node.left, current_cs)
         generate_cs(node.right, current_cs)
