@@ -535,7 +535,7 @@ def std_within(root_node):
     root_node.left = X2
 
 def extract_number(input_string):
-    match = re.search(r'<INT:(\d+)>', input_string)
+    match = re.search(r'<INT:(-?\d+)>', input_string)
     if match:
         return int(match.group(1))
     else:
@@ -599,9 +599,38 @@ while len(control_stack) != 0:
                         variable_stack.insert(0, temp_env.value)
                         flag = False
                     temp_env = temp_env.parent_env
-                    
+
+        elif last_ele.value == 'neg':
+            control_stack.pop()
+            
+            element = variable_stack.pop(0)
+            number = extract_number(element.value)
+            new_number = int(number * -1)
+            new_node = STNode(f'<INT:{new_number}>')
+            variable_stack.insert(0, new_node)
+            
+
+       
+        elif last_ele.value == 'ls':
+            control_stack.pop()
+
+            result = ''
+            operand1 = extract_number(variable_stack[0].value)
+            
+            operand2 = extract_number(variable_stack[1].value)
+            if operand1 < operand2:
+                result = STNode('true')
+            else:
+                result = STNode('false')
+            variable_stack.pop(0)
+            variable_stack.pop(0)
+            variable_stack.insert(0, result)
+            print(variable_stack[1].value)
+
+        
 
         elif last_ele.value == 'gamma' and isinstance(variable_stack[0], CSNode):
+           
             control_stack.pop()
             variable = variable_stack[0].top
             cs_index = variable_stack[0].bottom
@@ -614,6 +643,7 @@ while len(control_stack) != 0:
             variable_stack.pop(0)
             variable_stack.insert(0, current_env)
             control_stack = control_stack + ctr_structures[cs_index].elements
+            
            
         
         elif last_ele.value == '+':
@@ -628,9 +658,27 @@ while len(control_stack) != 0:
 
 
     elif isinstance(last_ele, CSNode):
+        
         last_ele.env = current_env
         variable_stack.insert(0, last_ele)
         control_stack.pop()
+        
+    elif last_ele.value == 'beta':
+        control_stack.pop()
+        print('last' ,control_stack[-1].index)
+        if variable_stack[0].value == 'true':
+            control_stack.pop()
+            print('reached this point')
+            print('cjamod', variable_stack[0].value)
+            control_stack = control_stack + control_stack.pop().elements
+            variable_stack.pop(0)
+            
+        elif variable_stack[0].value == 'false':
+            control_stack.pop(-2)
+            control_stack = control_stack + control_stack.pop().elements
+            variable_stack.pop(0)
+        
+     
     
     elif isinstance(last_ele, Env):
         if last_ele == variable_stack[1]:

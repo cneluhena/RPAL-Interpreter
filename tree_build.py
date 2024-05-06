@@ -137,10 +137,30 @@ def generate_cs(node, current_cs=None, num_of_lambdas=0):
         ctr_structures.append(current_cs)
         node.left = node.left.right
         generate_cs(csNode.node.left, current_cs=current_cs, num_of_lambdas=newIndex)
+        
         prev_cs = cs_stack.pop()
         generate_cs(csNode.node.right, current_cs=prev_cs, num_of_lambdas=newIndex)
 
-
+    elif node.value == '->':
+        current_index = current_cs.index + 1
+        then_cs = CS(index=current_cs.index+1)
+        else_cs = CS(index=current_cs.index+2)
+        ctr_structures.append(then_cs)
+        ctr_structures.append(else_cs)
+        current_cs.elements.append(then_cs)
+        current_cs.elements.append(else_cs)
+        beta_node = STNode('beta')
+        current_cs.elements.append(beta_node)
+        then_node = node.left.right
+        else_node = node.left.right.right
+        then_node.right = None
+        generate_cs(then_node, then_cs, num_of_lambdas)
+        print('thencs', [ele.value for ele in then_cs.elements])
+        generate_cs(else_node, else_cs, num_of_lambdas)
+        print('elsecs', [ele.value for ele in else_cs.elements])
+        node.left.right = None
+        generate_cs(node.left, current_cs, num_of_lambdas)
+        #check condition
     else:
         current_cs.elements.append(node)
         #print('current cs index', current_cs.index, [ele.value for ele in current_cs.elements])
